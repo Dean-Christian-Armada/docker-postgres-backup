@@ -1,5 +1,4 @@
-FROM heyman/postgresql
-MAINTAINER Jonatan Heyman <http://heyman.info>
+FROM postgres:9.6.6
 
 RUN apt-get update && apt-get install -y \
     python \
@@ -11,8 +10,9 @@ RUN apt-get update && apt-get install -y \
 VOLUME ["/data/backups"]
 
 ENV BACKUP_DIR /data/backups
+ENV TZ Asia/Singapore
 
-ADD . /backup
+COPY . /backup
 RUN touch /backup.log
 
 ENTRYPOINT ["/backup/entrypoint.sh"]

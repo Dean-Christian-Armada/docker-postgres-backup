@@ -1,0 +1,6 @@
+secrets
+.env
+.git
+Dockerfile
+README.rst
+.DS_Store

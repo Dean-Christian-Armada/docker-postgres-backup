@@ -38,13 +38,13 @@ def restore_backup():
     if not backup_exists():
         sys.stderr.write("Backup file doesn't exists!\n")
         sys.exit(1)
-    
+
     # restore postgres-backup
     cmd("env PGPASSWORD=%s pg_restore -Fc -h %s -U %s -d %s %s" % (
-        DB_PASS, 
-        DB_HOST, 
-        DB_USER, 
-        DB_NAME, 
+        DB_PASS,
+        DB_HOST,
+        DB_USER,
+        DB_NAME,
         backup_file,
     ))
 
@@ -61,10 +61,10 @@ def main():
     else:
         log("Downloading database dump")
         download_backup()
-    
+
     log("Restoring database")
     restore_backup()
-    
+
     log("Restore complete, took %.2f seconds" % (datetime.now() - start_time).total_seconds())
 
 if __name__ == "__main__":

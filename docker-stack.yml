@@ -1,0 +1,78 @@
+version: '3.3'
+
+services:
+  postgres-backup:
+    image: unnotech/postgres-s3-backup-via-cron:9.6.6
+    env_file:
+      - .env
+    volumes:
+     - postgres-backup-data:/data/backups
+    deploy:
+      replicas: 1
+    networks:
+      - backend
+    secrets:
+      - source: aws_access_key_id
+        target: /run/secrets/aws_access_key_id
+      - source: aws_secret_access_key
+        target: /run/secrets/aws_secret_access_key
+      - source: aws_default_region
+        target: /run/secrets/aws_default_region
+      - source: backup_from
+        target: /run/secrets/backup_from
+      - source: cron_schedule
+        target: /run/secrets/cron_schedule
+      - source: postgres_db
+        target: /run/secrets/postgres_db
+      - source: postgres_password
+        target: /run/secrets/postgres_password
+      - source: postgres_user
+        target: /run/secrets/postgres_user
+      - source: s3_path
+        target: /run/secrets/s3_path
+  postgres:
+    image: unnotech/postgres-replication:9.6.6
+    env_file:
+      - .env
+    volumes:
+     - postgres-data:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - backend
+    secrets:
+      - source: postgres_db
+        target: /run/secrets/postgres_db
+      - source: postgres_password
+        target: /run/secrets/postgres_password
+      - source: postgres_user
+        target: /run/secrets/postgres_user
+
+volumes:
+  postgres-data:
+  postgres-backup-data:
+
+networks:
+  backend:
+
+secrets:
+  aws_access_key_id:
+    file: secrets/aws_access_key_id
+  aws_secret_access_key:
+    file: secrets/aws_secret_access_key
+  aws_default_region:
+    file: secrets/aws_default_region
+  backup_from:
+    file: secrets/backup_from
+  cron_schedule:
+    file: secrets/cron_schedule
+  postgres_db:
+    file: secrets/postgres_db
+  postgres_user:
+    file: secrets/postgres_user
+  postgres_password:
+    file: secrets/postgres_password
+  s3_path:
+    file: secrets/s3_path
