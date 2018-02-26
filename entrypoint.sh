@@ -50,6 +50,7 @@ $CRON_SCHEDULE root . /backup/backup.sh >> /backup.log 2>&1
 echo "#!/bin/bash
 
 export BACKUP_DIR=$BACKUP_DIR
+export TZ=$TZ
 export S3_PATH=$S3_PATH
 export DB_NAME=$POSTGRES_DB
 export DB_PASS=$POSTGRES_PASSWORD
@@ -62,7 +63,6 @@ export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
 export WEBHOOK=$WEBHOOK
 export WEBHOOK_METHOD=$WEBHOOK_METHOD
-export TZ=$TZ
 " > /env.sh
 chmod +x /env.sh
 
